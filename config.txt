@@ -1,0 +1,14 @@
+alarmSite=Home
+username=
+password=
+port=3000
+mqttServerIP=
+mqttRootTopic=house
+zone=house/2262/0:1:motion 1
+zone=house/2262/880:2:motion 2
+twilioAccountSID=
+twilioAccountAuthToken=
+twilioFromNumber=
+twilioToNumber=
+cameraTopic=house/camera
+eventLogPrefix=/home/node/alarm
