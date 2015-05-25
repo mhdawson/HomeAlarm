@@ -9,7 +9,7 @@ license that can be found in the LICENSE file.
 <html>
    <head>
 
-   <title>Alarm Console</title>
+   <title><ALARM DASHBOARD TITLE></title>
 
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
@@ -191,7 +191,7 @@ license that can be found in the LICENSE file.
 
       function openwindow() {
           var url = 'https://' + window.location.host + '/?windowopen=y';
-	  var theWindow=window.open(url, "AlarmDataLive", "Height=320px,Width=390px,toolbar=0,location=0,menubar=0,scrollbars=1");
+	  var theWindow=window.open(url, "AlarmData:<UNIQUE_WINDOW_ID>", "Height=320px,Width=390px,toolbar=0,location=0,menubar=0,scrollbars=1");
           theWindow.focus();
       }
 

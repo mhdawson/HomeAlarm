@@ -1,5 +1,4 @@
 #!/bin/bash
-export PATH=<YOUR PATH TO NODE BIN>/bin:$PATH
-cd /home/node/alarm
-node server.js config.txt
-
+export PATH=/home/node/currentNode/bin:$PATH
+cd /home/node/HomeAlarm
+node server.js ./config.txt

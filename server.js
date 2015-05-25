@@ -8,7 +8,6 @@ var path = require('path');
 var fs = require('fs');
 var auth = require('basic-auth');
 var twilio = require('twilio');
-var moment = require('moment-timezone');
 var WebSocketServer = require('websocket').server;
 
 // constants
@@ -24,13 +23,13 @@ var INVALID_SERVER_PORT = -1;
 // server configurations
 var ssl_options = null;
 var serverPort = 8080;
-var mqttServerIP = '';
-var mqttServerPort = 1883;
+var mqttServerUrl = '';
 var mqttRootTopic = null;
 var alarmStatusTopic = null;
 var zoneTopicPrefix = null;
 var eventLogPrevix = null;
 var eventLogFile = null;
+var title = '';
 
 // alarm state and data
 var alarmSite = '';
@@ -52,11 +51,13 @@ var cameraTopic;
 var newPictureTopic;
 var cameraCaptureTopic;
 var pictureTimer = null;
-var picture1 = "";
-var picture2 = "";
-var picture3 = "";
-var picture4 = "";
+var picture1 = '';
+var picture2 = '';
+var picture3 = '';
+var picture4 = '';
 
+// for secure connection to mqtt server
+var mqttOptions = '';
 
 // authenticate requests to the alarm console
 var username = '';
@@ -123,13 +124,8 @@ function readConfig(configFile) {
              mqttRootTopic = configValue;
              alarmStatusTopic = mqttRootTopic +  '/alarm/status';
              zoneTopicPrefix = mqttRootTopic + '/alarm/zone/';
-         } else if ('mqttServerIP' == configKey) {
-             mqttServerIP = configValue;
-         } else if ('mqqtServerPort' == configKey) {
-             mqqtServerPort = configValue;
-             if (isNaN(mqqtServerPort)) {
-                config.log('Invalid mqqt server port:' + mqqtServerPort);
-             } 
+         } else if ('mqttServerUrl' == configKey) {
+             mqttServerUrl = configValue;
          } else if ('eventLogPrefix' == configKey) {
              eventLogPrefix = configValue;
              eventLogFile = eventLogPrefix + path.sep + 'alarm_event_log';
@@ -151,6 +147,15 @@ function readConfig(configFile) {
              username = configValue;
          } else if ('password' == configKey) {
              password = configValue;
+         } else if ('title' == configKey) {
+             title = configValue;
+         } else if ('certsDir' == configKey) {
+            mqttOptions = {
+               key: fs.readFileSync(configValue + '/client.key'),
+               cert: fs.readFileSync(configValue + '/client.cert'),
+               ca: fs.readFileSync(configValue + '/ca.cert'),
+               checkServerIdentity: function() { return undefined }
+            }
          }
       }
    }
@@ -160,7 +165,9 @@ readConfig(process.argv[2]);
 logEvent('Read configuration');
 
 // setup the websocket/server enpoint
-var mainPage = fs.readFileSync('page.html');
+var mainPage = fs.readFileSync('page.html').toString();
+mainPage = mainPage.replace('<ALARM DASHBOARD TITLE>', title);
+mainPage = mainPage.replace('<UNIQUE_WINDOW_ID>', title);
 var server = https.createServer(ssl_options, function(request,response) {
 //var server = http.createServer(function(request,response) {
 
@@ -225,7 +232,7 @@ wsServ.on('request', function(newRequest) {
 
 });
 
-var client = mqtt.createClient(mqttServerPort, mqttServerIP);
+var client = mqtt.connect(mqttServerUrl, mqttOptions);
 
 /* each time we connect register on all topics we are interested
  * in.  This must be done after a reconnect as well as the 

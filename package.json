@@ -1,0 +1,26 @@
+{
+  "name": "node-alarm",
+  "version": "1.0.0",
+  "description": "Alarm dashboard written in node",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhdawson/HomeAlarm.git"
+  },
+  "author": "Michael Dawson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mhdawson/HomeAlarm/issues"
+  },
+  "homepage": "https://github.com/mhdawson/HomeAlarm#readme",
+  "dependencies": {
+    "basic-auth": "^1.0.1",
+    "mqtt": "^1.2.0",
+    "twilio": "^2.2.0",
+    "websocket": "^1.0.18"
+  }
+}
