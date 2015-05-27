@@ -261,7 +261,7 @@ license that can be found in the LICENSE file.
       }
 
       function showPicture(index) {
-         var url = 'YOUR_URL_TO_WEB_SERVER/pictures/' + pictures[index]; 
+         var url = '<WEBSERVER_URL>/pictures/' + pictures[index]; 
          currentlyDisplayedPicture = index;
          var imageDialog = $('#displayPictures');
          var imageTag = $('#displayPictures-image');
@@ -279,7 +279,7 @@ license that can be found in the LICENSE file.
             if (pictureToDisplay == currentlyDisplayedPicture) {
                break;
             } else if (pictures[pictureToDisplay] != undefined) {
-               var url = 'YOUR_URL_TO_WEB_SERVER/pictures/' + pictures[pictureToDisplay]; 
+               var url = '<WEBSERVER_URL>/pictures/' + pictures[pictureToDisplay]; 
                imageTag = $('#displayPictures-image');
                imageTag.attr('src', url);
                currentlyDisplayedPicture = pictureToDisplay;

@@ -30,6 +30,7 @@ var zoneTopicPrefix = null;
 var eventLogPrevix = null;
 var eventLogFile = null;
 var title = '';
+var webserverUrlForPictures = '';
 
 // alarm state and data
 var alarmSite = '';
@@ -149,6 +150,8 @@ function readConfig(configFile) {
              password = configValue;
          } else if ('title' == configKey) {
              title = configValue;
+         } else if ('webserverUrlForPictures' == configKey) {
+             webserverUrlForPictures = configValue;
          } else if ('certsDir' == configKey) {
             mqttOptions = {
                key: fs.readFileSync(configValue + '/client.key'),
@@ -168,6 +171,8 @@ logEvent('Read configuration');
 var mainPage = fs.readFileSync('page.html').toString();
 mainPage = mainPage.replace('<ALARM DASHBOARD TITLE>', title);
 mainPage = mainPage.replace('<UNIQUE_WINDOW_ID>', title);
+mainPage = mainPage.replace('<WEBSERVER_URL>', webserverUrlForPictures);
+mainPage = mainPage.replace('<WEBSERVER_URL>', webserverUrlForPictures);
 var server = https.createServer(ssl_options, function(request,response) {
 //var server = http.createServer(function(request,response) {
 
