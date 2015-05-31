@@ -49,6 +49,9 @@ var twilioToNumber
 
 // camera configuration
 var cameraTopic;
+var cameraIRtopic = undefined;
+var cameraIRon = undefined;
+var cameraIRoff = undefined;
 var newPictureTopic;
 var cameraCaptureTopic;
 var pictureTimer = null;
@@ -76,8 +79,33 @@ function authenticate(request,response) {
 }
 
 // function to request that a picture be taken
+var irTimer = undefined;
 function takePicture() {
-   client.publish(cameraCaptureTopic, 'take'); 
+   irOn();
+   irOn();
+   irOn();
+
+   // leave some time for the ir light to illuminate
+   setTimeout(function() {
+                 client.publish(cameraCaptureTopic, 'take');
+              }, 10);
+
+   // now give the pi 60 seconds to take the picture
+   // and then turn off the ir light.  If another
+   // picture request comes before the first one
+   // is complete the timer is reset so we should
+   // always get 60s after the request for the last
+   // picture
+   if (irTimer != undefined) {
+      clearInterval(irTimer);
+   }
+   irTimer = setInterval(function() {
+                           irOff();
+                           irOff();
+                           irOff();
+                           clearInterval(irTimer);
+                           irTimer = undefined;
+                         }, 30000);
 }
 
 // used to log alarm events
@@ -146,6 +174,12 @@ function readConfig(configFile) {
              cameraCaptureTopic = cameraTopic + CAMERA_CAPTURE;
          } else if ('username' == configKey) {
              username = configValue;
+         } else if ('cameraIRtopic' == configKey) {
+             cameraIRtopic = configValue;
+         } else if ('cameraIRon' == configKey) {
+             cameraIRon = configValue;
+         } else if ('cameraIRoff' == configKey) {
+             cameraIRoff = configValue;
          } else if ('password' == configKey) {
              password = configValue;
          } else if ('title' == configKey) {
@@ -163,6 +197,19 @@ function readConfig(configFile) {
       }
    }
 }
+
+function irOn() {
+   if ((undefined != cameraIRtopic) && (undefined != cameraIRon)) {
+      client.publish(cameraIRtopic, cameraIRon);
+   }
+}
+
+function irOff() {
+   if ((undefined != cameraIRtopic) && (undefined != cameraIRoff)) {
+      client.publish(cameraIRtopic, cameraIRoff);
+   }
+}
+
 
 readConfig(process.argv[2]);
 logEvent('Read configuration');
@@ -231,7 +278,7 @@ wsServ.on('request', function(newRequest) {
       if (topic == alarmStatusTopic) { 
          client.publish(topic, value); 
       } else if (topic == cameraCaptureTopic) { 
-         client.publish(topic, value); 
+         takePicture();
       } 
    });
 
