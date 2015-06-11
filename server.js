@@ -220,8 +220,8 @@ mainPage = mainPage.replace('<ALARM DASHBOARD TITLE>', title);
 mainPage = mainPage.replace('<UNIQUE_WINDOW_ID>', title);
 mainPage = mainPage.replace('<WEBSERVER_URL>', webserverUrlForPictures);
 mainPage = mainPage.replace('<WEBSERVER_URL>', webserverUrlForPictures);
+mainPage = mainPage.replace('<WEBSERVER_URL>', webserverUrlForPictures);
 var server = https.createServer(ssl_options, function(request,response) {
-//var server = http.createServer(function(request,response) {
 
    if (!authenticate(request, response)) { 
       return;
@@ -345,10 +345,12 @@ client.on('message', function(topic, message) {
          }); 
       }
    } else if (topic == newPictureTopic) {
-      picture4 = picture3
-      picture3 = picture2
-      picture2 = picture1
-      picture1 =  message;
+      if (message != picture1) {
+         picture4 = picture3
+         picture3 = picture2
+         picture2 = picture1
+         picture1 =  message;
+      }
    }
    
    if (undefined != zoneMapping[topic]) { 

@@ -99,7 +99,8 @@ license that can be found in the LICENSE file.
    </style>
 
    <script>
-      var pictures = new Array(4);
+      var pictures = null;
+      var currentView = 1;
       var currentlyDisplayedPicture = null;
       var alarmState = "disarmed";
       var wsConnection;
@@ -107,6 +108,8 @@ license that can be found in the LICENSE file.
       var reconnectTimeout = 1000 * 5;
       var connect = function() {
          console.log('connecting');
+         pictures = new Array(4);
+
          wsConnection = new WebSocket('wss://' + window.location.host,'text');
          wsConnection.onmessage = function(event) {
             var parts = event.data.split(":");
@@ -223,8 +226,32 @@ license that can be found in the LICENSE file.
             position: { my: "top" },
             buttons: [
                {
+                  text: "1",
+                  click: function() {
+                     showView(1);
+                  }
+               },
+               {
+                  text: "2",
+                  click: function() {
+                     showView(2);
+                  }
+               },
+               {
+                  text: "3",
+                  click: function() {
+                     showView(3);
+                  }
+               },
+               {
+                  text: "4",
+                  click: function() {
+                     showView(4);
+                  }
+               },
+               {
                   text: "next",
-                  click: function() { 
+                  click: function() {
                      showNextPicture();
                   }
                },
@@ -261,12 +288,35 @@ license that can be found in the LICENSE file.
       }
 
       function showPicture(index) {
-         var url = '<WEBSERVER_URL>/pictures/' + pictures[index]; 
+         var url = '<WEBSERVER_URL>/pictures/' + getViewQualifier() + pictures[index];
          currentlyDisplayedPicture = index;
          var imageDialog = $('#displayPictures');
          var imageTag = $('#displayPictures-image');
          imageTag.attr('onload', function() { imageDialog.dialog("open"); });
          imageTag.attr('src', url);
+      }
+
+      function getViewQualifier() {
+         var viewQualifier = '';
+         if (currentView != 1) {
+            viewQualifier = currentView + '-';
+         }
+         return viewQualifier;
+      }
+
+      function showView(view) {
+         if (currentView === view) {
+               return;
+         } else {
+            currentView = view;
+            var viewDisplay = document.getElementById('currentView');
+            viewDisplay.innerHTML = currentView;
+            var url = '<WEBSERVER_URL>/pictures/' + getViewQualifier()
+                                                  + pictures[currentlyDisplayedPicture];
+            imageTag = $('#displayPictures-image');
+            imageTag.attr('src', url);
+            return;
+         }
       }
 
       function showNextPicture() {
@@ -279,10 +329,10 @@ license that can be found in the LICENSE file.
             if (pictureToDisplay == currentlyDisplayedPicture) {
                break;
             } else if (pictures[pictureToDisplay] != undefined) {
-               var url = '<WEBSERVER_URL>/pictures/' + pictures[pictureToDisplay]; 
+               currentlyDisplayedPicture = pictureToDisplay;
+               var url = '<WEBSERVER_URL>/pictures/' + getViewQualifier() + pictures[currentlyDisplayedPicture];
                imageTag = $('#displayPictures-image');
                imageTag.attr('src', url);
-               currentlyDisplayedPicture = pictureToDisplay;
                break;
             }
          }
@@ -310,6 +360,7 @@ license that can be found in the LICENSE file.
 
    <body>
       <div id="displayPictures" >
+         <div id="currentView">1</div>
          <img id="displayPictures-image" src="" width="100%" />
       </div>
       <div id="displayLog" >
