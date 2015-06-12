@@ -345,7 +345,11 @@ client.on('message', function(topic, message) {
          }); 
       }
    } else if (topic == newPictureTopic) {
-      if (message != picture1) {
+      // seems like we sometimes get duplicates, avoid adding these to the picture rotation
+      if ((message != picture1) &&
+          (message != picture2) &&
+          (message != picture3) &&
+          (message != picture4)) {
          picture4 = picture3
          picture3 = picture2
          picture2 = picture1

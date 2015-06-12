@@ -136,6 +136,7 @@ license that can be found in the LICENSE file.
                   targetTD.innerHTML = "---- ALARM ACTIVATED ----</H3>";
                }
             } else if ('house/camera/newpicture' == topic) {
+               stopPictureInFlightIndicator();
                if (value != '') {
                   var picture1 = document.getElementById('picture1');
                   var picture2 = document.getElementById('picture2');
@@ -189,7 +190,6 @@ license that can be found in the LICENSE file.
             console.log('websocket connection close');
             setTimeout(connect, reconnectTimeout);
          };
-
       }
 
       function openwindow() {
@@ -214,8 +214,29 @@ license that can be found in the LICENSE file.
          }
       }
 
+      var pictureInFlight = undefined;
+      var pictureInFlightState = 0;
+      var indicator = undefined;
+      function stopPictureInFlightIndicator() {
+         pictureInFlightState = 0;
+         indicator.innerHTML="picture";
+         if (pictureInFlight !== undefined) {
+            clearInterval(pictureInFlight);
+         }
+      }
+
       function takePicture() {
-            wsConnection.send('house/camera/capture' + ':take');
+         wsConnection.send('house/camera/capture' + ':take');
+         pictureInFlight = setInterval(function() {
+            indicator = document.getElementById('take-picture');
+            if (pictureInFlightState === 0) {
+               pictureInFlightState = 1;
+               indicator.innerHTML="";
+            } else {
+               pictureInFlightState = 0;
+               indicator.innerHTML="picture";
+            }
+         },1000);
       }
 
       function prepareDialogs() {
@@ -380,11 +401,11 @@ license that can be found in the LICENSE file.
          <tr>
             <td>&nbsp;</td><td><take_picture class=button_class onclick="takePicture();" width="100%" id="take-picture">picture</take_picutre></td>
          </tr>
-         <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-         <tr><td>&nbsp;</td><td><div id="picture1" width="100%" id="take-picture">&nbsp;</div></td></tr>
-         <tr><td>&nbsp;</td><td><div id="picture2" width="100%" id="take-picture">&nbsp;</div></td></tr>
-         <tr><td>&nbsp;</td><td><div id="picture3" width="100%" id="take-picture">&nbsp;</div></td></tr>
-         <tr><td>&nbsp;</td><td><div id="picture4" width="100%" id="take-picture">&nbsp;</div></td></tr>
+         <tr><td>&nbsp;</td><td><div id="pending" width="100%" >&nbsp;</div></td></tr>
+         <tr><td>&nbsp;</td><td><div id="picture1" width="100%" >&nbsp;</div></td></tr>
+         <tr><td>&nbsp;</td><td><div id="picture2" width="100%" >&nbsp;</div></td></tr>
+         <tr><td>&nbsp;</td><td><div id="picture3" width="100%" >&nbsp;</div></td></tr>
+         <tr><td>&nbsp;</td><td><div id="picture4" width="100%" &nbsp;</div></td></tr>
          <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
          <tr><td>&nbsp;</td><td><show_log class=button_class onclick="showLog();" width="100%" id="showLog">showLog</show_log></td></tr> 
       </table>
