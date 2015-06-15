@@ -107,8 +107,23 @@ license that can be found in the LICENSE file.
       var zonePrefix = 'house/alarm/zone';
       var reconnectTimeout = 1000 * 5;
       var connect = function() {
-         console.log('connecting');
-         pictures = new Array(4);
+         try {
+            pictures = new Array(4);
+            var picture1 = document.getElementById('picture1')
+            var picture2 = document.getElementById('picture2')
+            var picture3 = document.getElementById('picture3')
+            var picture4 = document.getElementById('picture4')
+            picture1.innerHTML = '';
+            picture2.innerHTML = '';
+            picture3.innerHTML = '';
+            picture4.innerHTML = '';
+            picture1.classList.remove('button_class');
+            picture2.classList.remove('button_class');
+            picture3.classList.remove('button_class');
+            picture4.classList.remove('button_class');
+
+         } catch (err) {
+         }
 
          wsConnection = new WebSocket('wss://' + window.location.host,'text');
          wsConnection.onmessage = function(event) {
@@ -142,23 +157,23 @@ license that can be found in the LICENSE file.
                   var picture2 = document.getElementById('picture2');
                   var picture3 = document.getElementById('picture3');
                   var picture4 = document.getElementById('picture4');
-
 		  pictures[3] = pictures[2];
                   pictures[2] = pictures[1];
                   pictures[1] = pictures[0];
                   pictures[0] = value;
 
-                  if (picture3.classList.length != 0) {   
+
+                  if (pictures[3]!= undefined) {
                      picture4.innerHTML = picture3.innerHTML;
                      picture4.onclick = function() { showPicture(3); };
                      picture4.classList.add('button_class', 'picture_button_class');
                   }
-                  if (picture2.classList.length != 0) {   
+                  if (pictures[2]!= undefined) {
                      picture3.innerHTML = picture2.innerHTML;
                      picture3.onclick = function() { showPicture(2); };
                      picture3.classList.add('button_class', 'picture_button_class');
                   }
-                  if (picture1.classList.length != 0) {   
+                  if (pictures[1]!= undefined) {
                      picture2.innerHTML = picture1.innerHTML;
                      picture2.onclick = function() { showPicture(1); };
                      picture2.classList.add('button_class', 'picture_button_class');
@@ -183,7 +198,10 @@ license that can be found in the LICENSE file.
          
          wsConnection.onerror = function() {
             console.log('websocket connection error');
-            setTimeout(connect, reconnectTimeout);
+            try {
+               wsConnection.close();
+            } catch (err) {
+            }
          };
 
          wsConnection.onclose = function() {
@@ -216,8 +234,8 @@ license that can be found in the LICENSE file.
 
       var pictureInFlight = undefined;
       var pictureInFlightState = 0;
-      var indicator = undefined;
       function stopPictureInFlightIndicator() {
+         var indicator = document.getElementById('take-picture');
          pictureInFlightState = 0;
          indicator.innerHTML="picture";
          if (pictureInFlight !== undefined) {
@@ -227,8 +245,8 @@ license that can be found in the LICENSE file.
 
       function takePicture() {
          wsConnection.send('house/camera/capture' + ':take');
+         var indicator = document.getElementById('take-picture');
          pictureInFlight = setInterval(function() {
-            indicator = document.getElementById('take-picture');
             if (pictureInFlightState === 0) {
                pictureInFlightState = 1;
                indicator.innerHTML="";

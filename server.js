@@ -257,7 +257,9 @@ wsServ.on('request', function(newRequest) {
    clientArray[id] = newConnection;
 
    for (key in latestData) {
-      newConnection.sendUTF(key + ":" + latestData[key]);
+      if (key != newPictureTopic) {
+         newConnection.sendUTF(key + ":" + latestData[key]);
+      }
    } 
 
    // send the latest pictures
