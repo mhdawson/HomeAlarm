@@ -7,6 +7,7 @@ MQTT. It provides a GUI that allows you to:
 * see the status of the zones
 * ask that a picture be taken
 * view the last 4 pictures taken
+* view pictures from multiple cameras
 * view the log of alarm events
 
 When the alarm is triggered it will take pictures every 10 second for 5 minutes, pushing them to a remote webserver.
@@ -25,7 +26,8 @@ Additional views when alarm is active and triggered
 ![picture of alarm when triggered](pictures/alarm_main_window_triggered.jpg?raw=true)
 
 View when using GUI to display pictures taken by camera
-![sample camera picture view](pictures/alarm_camera_pictures_view.jpg?raw=true)
+
+![sample camera picture view](pictures/alarm_camera_picture_view.jpg?raw=true)
 
 The server requires Node with the following modules installed:
 
