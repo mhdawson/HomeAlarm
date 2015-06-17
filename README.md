@@ -24,6 +24,9 @@ Additional views when alarm is active and triggered
 ![picture of alarm when armed](pictures/alarm_main_window_armed.jpg?raw=true)
 ![picture of alarm when triggered](pictures/alarm_main_window_triggered.jpg?raw=true)
 
+View when using GUI to display pictures taken by camera
+![sample camera picture view](pictures/alarm_camera_pictures_view.jpg?raw=true)
+
 The server requires Node with the following modules installed:
 
 * basic-auth
