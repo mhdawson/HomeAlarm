@@ -60,10 +60,6 @@ Most configuration is done in the config.txt file which supports the following c
 
 ## TODOs
 - Add more doc on how to configure, setup and run, including the required mqtt server
-- Generate page.html from a template so that URL from which to get pictures and be configured in config.txt
-- Modify to be able to connect to mqtt server using ssl
-- Add support for turning on IR illuminator before taking picture
 - Add support for day/night sensor 
-- Add support for multiple webcams, selectable based on day/night
 - Mobile app for gui would be nice. 
 
