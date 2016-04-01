@@ -1,4 +1,16 @@
-# MQTT/Node base home alarm system
+# MQTT/Node base home alarm system - OBSOLETE
+
+OBSOLETE, OBSOLETE, OBSOLETE
+
+Replaced by: https://github.com/mhdawson/micro-app-home-alarm
+
+The same home alarm functionality but based on the micro-app-framework
+so you can also get the look add feel of native desktop and
+mobile applications
+
+
+----------------------------------------------------------
+
 
 This projects provides a home based alarm system using Node and
 MQTT. It provides a GUI that allows you to:
